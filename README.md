@@ -23,6 +23,10 @@ Taira Multiselect relies on [Ui-Bootstrap] (https://angular-ui.github.io/bootstr
 
 ## Basic setup
 
+```javascript
+  var myApp = angular.module('myApp', ['ui.bootstrap', 'taira-multiselect']);
+```
+
 ```html
   <taira-multiselect model="selected" options="dataSet" settings="settings"></taira-multiselect>
 ```
