@@ -39,7 +39,9 @@ Taira Multiselect relies on [Ui-Bootstrap] (https://angular-ui.github.io/bootstr
     {id: 2, name: 'Vivian', surname: 'Redox'},
   ];
   $scope.settings = {
-    displayField: ['name']        
+    display: {
+      fields: ['name']        
+    }
   };
 ```
 
