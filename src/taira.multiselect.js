@@ -13,54 +13,73 @@ angular.module('taira-multiselect', ['ng'])
       link: function ($scope, $element, $attrs) {
         //Default values
         $scope._settings = {
-          displayFieldType: 'array',
-          displayField: ['id'],
-          displayFieldPrependHTML: '',
-          btnClass: 'btn-primary',
-          menuClass: '',
-          selectProperty: [],
-          btnText: 'Multiselect',
-          btnCountSelected: false,
-          open: false,
-          selectAll: true,
-          unselectAll: true,
-          showCheckbox: true,
-          selectedPrependHTML: '',
+          display: {
+            fields: ['id'],                       //fields that will be showed for each option
+            prepend: '',                          //html that will be prepended to each option in addition to fields
+            append: '',                           //html that will be appended to each option in addition to fields
+          },
+          btn: {
+            text: 'Multiselect',                  //text that will be shown in the button
+            class: 'btn-primary',                 //btn class
+            count: false                          //show total number of selected items in the button
+          },
+          list: {
+            opened: false,                        //show or not the list opened
+            class: '',                             //class to be applied to the list
+            selectedClass: ''                     //class to be applied to a selected item
+          },
+          select: {
+            fields: [],                           //fields that will be pushed when an option is selected. [] = all
+          },
+          extra: {
+            selectAll: true,                      //show or not a select all button
+            unselectAll: true,                    //show or not an unselect all button
+            showCheckbox: true                    //show checkbox next to each option
+          }
         };
 
-        angular.extend($scope._settings, $scope.settings || []);
+        _.extend($scope._settings.display, $scope.settings.display);
+        _.extend($scope._settings.btn, $scope.settings.btn);
+        _.extend($scope._settings.list, $scope.settings.list);
+        _.extend($scope._settings.select, $scope.settings.select);
+        _.extend($scope._settings.extra, $scope.settings.extra);
 
-        if($scope._settings.selectedPrependHTML)
-          $scope._settings.selectedPrependHTML = $sce.trustAsHtml($scope._settings.selectedPrependHTML);
-
-        if($scope._settings.displayFieldPrependHTML)
-          $scope._settings.displayFieldPrependHTML = $sce.trustAsHtml($scope._settings.displayFieldPrependHTML);
-
-        
         $scope.getDisplayText = function(option) {
           var text = '';
-
-          if($scope._settings.displayFieldType == 'array') {
-            $scope._settings.displayField.forEach(function(field) {
-              text += option[field] + ' ';
-            });  
-          }else if($scope._settings.displayFieldType == 'string') {
-            text = $scope._settings.displayField;
+          if($scope._settings.display.prepend) {
+            text += $scope._settings.display.prepend;
           }
-          
-          return text.trim();
+
+          angular.forEach($scope._settings.display.fields, function(field) {
+            text += getDeepProperty(option, field) + ' ';
+          });
+
+          if($scope._settings.display.append) {
+            text += $scope._settings.display.append;
+          }
+
+          return $sce.trustAsHtml(text.trim());
         };
+
+        function getDeepProperty(obj, path) {
+          obj = angular.copy(obj);
+          path = path.split('.');
+          for (var i = 0; i < path.length; i++) {
+            obj = obj[path[i]];
+          }
+          return obj;
+        }
 
         function getSelectPropertyObj(item) {
           var obj = {};
 
-          if(!$scope._settings.selectProperty.length) {
+          if(!$scope._settings.select.fields.length) {
             return angular.copy(item);
           }
 
-          angular.forEach($scope._settings.selectProperty, function(property) {
+          angular.forEach($scope._settings.select.fields, function(property) {
             obj[property] = item[property];
-          });            
+          });
 
           return obj;
         };
@@ -98,26 +117,23 @@ angular.module('taira-multiselect', ['ng'])
     }
 	}]).run(['$templateCache', function($templateCache) {
     var template =
-    	'<div class="btn-group" uib-dropdown auto-close="disabled" is-open="_settings.open">' +
-			  '<button type="button" class="btn {{_settings.btnClass}}" uib-dropdown-toggle ng-disabled="disabled">' +
-			    '{{_settings.btnCountSelected ? (model.length ?  model.length : "none") + " selected" : _settings.btnText}} <span class="caret"></span>' +
+    	'<div class="btn-group" uib-dropdown auto-close="disabled" is-open="_settings.list.opened">' +
+			  '<button type="button" class="btn {{_settings.btn.class}}" uib-dropdown-toggle>' +
+			    '{{_settings.btn.count ? (model.length ?  model.length : "none") + " selected" : _settings.btn.text}} <span class="caret"></span>' +
 			  '</button>' +
-			  '<ul class="dropdown-menu {{_settings.menuClass}}" uib-dropdown-menu role="menu" aria-labelledby="single-button">' +
-			    '<li ng-if="_settings.selectAll">' +
+			  '<ul class="dropdown-menu {{_settings.list.class}}" uib-dropdown-menu role="menu" aria-labelledby="single-button">' +
+			    '<li ng-if="_settings.extra.selectAll">' +
 			      '<a href="" ng-click="selectAll()">Select all</a>' +
 			    '</li>' +
-			    '<li ng-if="_settings.unselectAll">' +
+			    '<li ng-if="_settings.extra.unselectAll">' +
 			      '<a href="" ng-click="unselectAll()">Unselect all</a>' +
 			    '</li>' +
-			    '<li ng-if="_settings.unselectAll || _settings.selectAll" class="divider"></li>' +
-			    '<li ng-repeat="option in options" role="menuitem">' +
+			    '<li ng-if="_settings.extra.unselectAll || _settings.extra.selectAll" class="divider"></li>' +
+			    '<li ng-repeat="option in options" role="menuitem" ng-class="{\'{{_settings.list.selectedClass}}\': isChecked(option)}">' +
 			      '<a href="" ng-click="selectItem(option)">' +
-			        '<span ng-if="!_settings.showCheckbox && _settings.selectedPrependHTML && isChecked(option)" ng-bind-html="_settings.selectedPrependHTML">' +
-			        '</span>' +
-			        '<input type="checkbox" ng-if="_settings.showCheckbox" ng-click="checkboxClick($event, option)" ng-checked="isChecked(option)">' +
+			        '<input type="checkbox" ng-if="_settings.extra.showCheckbox" ng-click="checkboxClick($event, option)" ng-checked="isChecked(option)">' +
 			        '&nbsp;' +
-			        '<span ng-if="_settings.displayFieldPrependHTML" ng-bind-html="_settings.displayFieldPrependHTML"></span>' +
-			        '{{getDisplayText(option)}}' +
+			        '<span ng-bind-html="getDisplayText(option)"></span>' +
 			      '</a>' +
 			    '</li>' +
 			  '</ul>' +
