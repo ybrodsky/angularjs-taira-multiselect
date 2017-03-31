@@ -8,7 +8,7 @@ Full examples and documentation can be found here: http://ybrodsky.github.io/ang
 
 ## Instalation
 
-**npm install angularjs-taira-multiselect**
+*npm install angularjs-taira-multiselect*
 
 Taira Multiselect relies on [Ui-Bootstrap] (https://angular-ui.github.io/bootstrap/) and [Lodash] (http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js)
 ```html
