@@ -56,7 +56,7 @@ angular.module('taira-multiselect', ['ng'])
               text += getDeepProperty(option, field) + ' ';
             } else {
               if(field.raw) {
-                text += getDeepProperty(option, field.value) + ' ';
+                text += field.value;
               }else if(field.transform) {
                 var value = getDeepProperty(option, field.value) + ' ';
                 text += field.transform(value);
