@@ -77,6 +77,8 @@ angular.module('taira-multiselect', ['ng'])
           obj = angular.copy(obj);
           path = path.split('.');
           for (var i = 0; i < path.length; i++) {
+            if(!obj[path[i]]) return '';
+
             obj = obj[path[i]];
           }
           return obj;
