@@ -55,8 +55,14 @@ angular.module('taira-multiselect', ['ng'])
             if(typeof field === 'string') {
               text += getDeepProperty(option, field) + ' ';
             } else {
-              var value = getDeepProperty(option, field.value) + ' ';
-              text += field.transform(value);
+              if(field.raw) {
+                text += getDeepProperty(option, field.value) + ' ';
+              }else if(field.transform) {
+                var value = getDeepProperty(option, field.value) + ' ';
+                text += field.transform(value);
+              }else {
+                text += getDeepProperty(option, field.value) + ' ';
+              }
             }
           });
 
@@ -71,11 +77,7 @@ angular.module('taira-multiselect', ['ng'])
           obj = angular.copy(obj);
           path = path.split('.');
           for (var i = 0; i < path.length; i++) {
-            if(!obj[path[i]]) {
-              obj = path[i];
-            }else {
-              obj = obj[path[i]];
-            }
+            obj = obj[path[i]];
           }
           return obj;
         }
