@@ -34,7 +34,8 @@ angular.module('taira-multiselect', ['ng'])
           extra: {
             selectAll: true,                      //show or not a select all button
             unselectAll: true,                    //show or not an unselect all button
-            showCheckbox: true                    //show checkbox next to each option
+            showCheckbox: true,                    //show checkbox next to each option
+            containerClass: ''                    //container class
           }
         };
 
@@ -51,7 +52,12 @@ angular.module('taira-multiselect', ['ng'])
           }
 
           angular.forEach($scope._settings.display.fields, function(field) {
-            text += getDeepProperty(option, field) + ' ';
+            if(typeof field === 'string') {
+              text += getDeepProperty(option, field) + ' ';
+            } else {
+              var value = getDeepProperty(option, field.value) + ' ';
+              text += field.transform(value);
+            }
           });
 
           if($scope._settings.display.append) {
@@ -65,7 +71,11 @@ angular.module('taira-multiselect', ['ng'])
           obj = angular.copy(obj);
           path = path.split('.');
           for (var i = 0; i < path.length; i++) {
-            obj = obj[path[i]];
+            if(!obj[path[i]]) {
+              obj = path[i];
+            }else {
+              obj = obj[path[i]];
+            }
           }
           return obj;
         }
@@ -117,7 +127,7 @@ angular.module('taira-multiselect', ['ng'])
     }
 	}]).run(['$templateCache', function($templateCache) {
     var template =
-    	'<div class="btn-group" uib-dropdown auto-close="disabled" is-open="_settings.list.opened">' +
+    	'<div class="btn-group {{_settings.extra.containerClass}}" uib-dropdown auto-close="disabled" is-open="_settings.list.opened">' +
 			  '<button type="button" class="btn {{_settings.btn.class}}" uib-dropdown-toggle>' +
 			    '{{_settings.btn.count ? (model.length ?  model.length : "none") + " selected" : _settings.btn.text}} <span class="caret"></span>' +
 			  '</button>' +

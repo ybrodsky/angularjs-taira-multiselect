@@ -1,0 +1,31 @@
+{
+  "name": "angularjs-taira-multiselect",
+  "version": "1.0.0",
+  "description": "Multiselect directive for AngularJs",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ybrodsky/angularjs-taira-multiselect.git"
+  },
+  "keywords": [
+    "angularjs",
+    "multiselect",
+    "taira",
+    "ybrodsky"
+  ],
+  "author": "Yael Brodsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ybrodsky/angularjs-taira-multiselect/issues"
+  },
+  "homepage": "https://github.com/ybrodsky/angularjs-taira-multiselect#readme",
+  "dependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.1.2"
+  }
+}
