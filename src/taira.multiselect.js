@@ -9,7 +9,7 @@ angular.module('taira-multiselect', ['ng'])
         options: '=',
         settings: '='
       },
-      templateUrl: 'teh-template',
+      template: '<ng-include src="getTemplate()"/>',
       link: function ($scope, $element, $attrs) {
         //Default values
         $scope._settings = {
@@ -35,7 +35,8 @@ angular.module('taira-multiselect', ['ng'])
             selectAll: true,                      //show or not a select all button
             unselectAll: true,                    //show or not an unselect all button
             showCheckbox: true,                    //show checkbox next to each option
-            containerClass: ''                    //container class
+            containerClass: '',                   //container class
+            template: 'teh-template'
           }
         };
 
@@ -44,6 +45,10 @@ angular.module('taira-multiselect', ['ng'])
         _.extend($scope._settings.list, $scope.settings.list);
         _.extend($scope._settings.select, $scope.settings.select);
         _.extend($scope._settings.extra, $scope.settings.extra);
+
+        $scope.getTemplate = function() {
+          return $scope._settings.extra.template;
+        }
 
         $scope.getDisplayText = function(option) {
           var text = '';
@@ -154,4 +159,31 @@ angular.module('taira-multiselect', ['ng'])
 			'</div>';
 
 		$templateCache.put('teh-template', template);
+
+    template =
+      '<div class="{{_settings.extra.containerClass}}">' +
+        '<div class="panel panel-default">' +
+          '<div class="panel-body">' +
+            '<ul class="{{_settings.list.class}}">' +
+              '<li ng-if="_settings.extra.selectAll">' +
+                '<a href="" ng-click="selectAll()">Select all</a>' +
+              '</li>' +
+              '<li ng-if="_settings.extra.unselectAll">' +
+                '<a href="" ng-click="unselectAll()">Unselect all</a>' +
+              '</li>' +
+              '<li ng-if="_settings.extra.unselectAll || _settings.extra.selectAll" class="divider"></li>' +
+              '<li ng-repeat="option in options" role="menuitem" ng-class="{\'{{_settings.list.selectedClass}}\': isChecked(option)}">' +
+                '<a href="" ng-click="selectItem(option)">' +
+                  '<input type="checkbox" ng-if="_settings.extra.showCheckbox" ng-click="checkboxClick($event, option)" ng-checked="isChecked(option)">' +
+                  '&nbsp;' +
+                  '<span ng-bind-html="getDisplayText(option)"></span>' +
+                '</a>' +
+              '</li>' +
+            '</ul>' +
+          '</div>'
+        '</div>'
+      '</div>';
+
+    $templateCache.put('teh-template-list', template);
+
   }]);
