@@ -164,7 +164,7 @@ angular.module('taira-multiselect', ['ng'])
       '<div class="{{_settings.extra.containerClass}}">' +
         '<div class="panel panel-default">' +
           '<div class="panel-body">' +
-            '<ul class="{{_settings.list.class}}">' +
+            '<ul class="list-unstyled {{_settings.list.class}}">' +
               '<li ng-if="_settings.extra.selectAll">' +
                 '<a href="" ng-click="selectAll()">Select all</a>' +
               '</li>' +

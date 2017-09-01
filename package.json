@@ -1,6 +1,6 @@
 {
   "name": "angularjs-taira-multiselect",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Multiselect directive for AngularJs",
   "main": "gulpfile.js",
   "scripts": {
